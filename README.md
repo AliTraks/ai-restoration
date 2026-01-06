@@ -367,7 +367,7 @@ Focus areas:
 
 Built for professional portfolio demonstration and real-world applications in computer vision and deep learning.
 
-**Contact**: [Your Email] | [LinkedIn] | [GitHub]
+**Contact**: [ali1313artin@gmail.com] | [www.linkedin.com/in/ali-gholami-8809x] | []
 
 ---
 
