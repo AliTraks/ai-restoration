@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Main restoration application
+  ai-restoration:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-restoration
+    ports:
+      - "8501:8501"  # Streamlit web interface
+    volumes:
+      # Mount directories for persistent storage
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./models/weights:/app/models/weights
+      - ./examples:/app/examples
+      # Mount local data directory (create this on host)
+      - ./data:/app/data
+    environment:
+      # CUDA settings
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+      # Python settings
+      - PYTHONUNBUFFERED=1
+      # Streamlit settings
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai-restoration-network
+
+  # Optional: Jupyter notebook for development
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-restoration-jupyter
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./:/app
+      - ./notebooks:/app/notebooks
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - JUPYTER_ENABLE_LAB=yes
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai-restoration-network
+    profiles:
+      - dev  # Only start with: docker-compose --profile dev up
+
+networks:
+  ai-restoration-network:
+    driver: bridge
+
+volumes:
+  models:
+  output:
+  temp:
