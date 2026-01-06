@@ -401,7 +401,7 @@ CONFIG = {
 
 - **Issues**: GitHub Issues
 - **Discussions**: GitHub Discussions
-- **Email**: your.email@example.com
+- **Email**: ali131artin@gmail.com
 - **Documentation**: README.md
 - **Examples**: example_usage.py
 
